@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Website Redirector",
+  "version": "1.0",
+  "description": "Automatically redirects specific websites to destinations of your choice",
+  "permissions": ["webNavigation", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.jpg",
+      "48": "icons/icon48.jpg",
+      "128": "icons/icon128.jpeg"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.jpg",
+    "48": "icons/icon48.jpg",
+    "128": "icons/icon128.jpeg"
+  }
+}

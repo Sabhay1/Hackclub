@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Procrastination Mode</title>
+    <style>
+      body {
+        width: 300px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      /* Procrastination Mode UI */
+      .procrastination-section {
+        padding: 15px;
+        text-align: center;
+      }
+
+      .mode-toggle {
+        background-color: #f0f0f0;
+        border-radius: 20px;
+        padding: 5px;
+        width: 150px;
+        margin: 0 auto 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .tree-container {
+        width: 150px;
+        height: 150px;
+        background-color: #f2e8a0;
+        border-radius: 50%;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .soil {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40%;
+        background-color: #8b4513;
+        border-radius: 0 0 75px 75px;
+      }
+
+      .game-device {
+        position: absolute;
+        bottom: 25%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 70px;
+        background-color: #222;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px;
+        transition: opacity 0.5s ease;
+      }
+
+      .game-screen {
+        width: 30px;
+        height: 30px;
+        background-color: #444;
+        border: 2px solid #222;
+      }
+
+      .game-controls {
+        display: flex;
+        margin-top: 5px;
+      }
+
+      .game-button {
+        width: 8px;
+        height: 8px;
+        background-color: #666;
+        border-radius: 50%;
+        margin: 0 2px;
+      }
+
+      .timer-display {
+        font-size: 36px;
+        font-weight: bold;
+        margin: 20px auto;
+        color: #333;
+      }
+
+      .flame {
+        position: absolute;
+        bottom: 40%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 90px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .flame.active {
+        opacity: 1;
+      }
+
+      .burned-fragments {
+        position: absolute;
+        bottom: 40%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .burned-fragments.active {
+        opacity: 1;
+      }
+
+      /* Animation keyframes */
+      @keyframes burn {
+        0% {
+          opacity: 1;
+          transform: translateX(-50%) scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: translateX(-50%) scale(0.9) rotate(5deg);
+        }
+        100% {
+          opacity: 0;
+          transform: translateX(-50%) scale(0.8) rotate(-5deg);
+        }
+      }
+
+      @keyframes flicker {
+        0% {
+          opacity: 0.8;
+          transform: translateX(-50%) scale(1);
+        }
+        25% {
+          opacity: 1;
+          transform: translateX(-49%) scale(1.05);
+        }
+        50% {
+          opacity: 0.9;
+          transform: translateX(-51%) scale(0.95);
+        }
+        75% {
+          opacity: 1;
+          transform: translateX(-50%) scale(1.02);
+        }
+        100% {
+          opacity: 0.8;
+          transform: translateX(-50%) scale(1);
+        }
+      }
+
+      .game-device.burning {
+        animation: burn 5s forwards;
+      }
+
+      /* Hidden sections */
+      .hidden-section {
+        padding: 15px;
+        border-top: 1px solid #eee;
+        display: none;
+      }
+
+      .show-hidden {
+        display: block;
+      }
+
+      h2 {
+        margin-top: 0;
+        font-size: 18px;
+        color: #333;
+      }
+
+      .settings-section {
+        padding: 15px;
+        border-top: 1px solid #eee;
+      }
+
+      .settings-option {
+        margin-bottom: 10px;
+      }
+
+      input[type="number"] {
+        width: 50px;
+      }
+
+      /* Toggle switch */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 26px;
+        margin: 0 10px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: #ef5350;
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(34px);
+      }
+
+      button {
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 3px;
+        cursor: pointer;
+        margin-right: 5px;
+      }
+
+      /* Redirect section styles */
+      .redirect-item {
+        display: flex;
+        margin-bottom: 10px;
+        align-items: center;
+      }
+
+      .redirect-item input {
+        flex: 1;
+        padding: 5px;
+        margin-right: 5px;
+      }
+
+      .arrow {
+        margin: 0 5px;
+      }
+
+      .delete-btn {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        padding: 5px 8px;
+        cursor: pointer;
+      }
+
+      .controls {
+        margin-bottom: 10px;
+      }
+    </style>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="procrastination-section">
+      <div class="mode-toggle">
+        <span>Procrastination Mode</span>
+        <label class="switch">
+          <input type="checkbox" id="procrastination-toggle" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="tree-container" id="tree-circle">
+        <div class="soil"></div>
+        <div class="game-device" id="game-device">
+          <div class="game-screen"></div>
+          <div class="game-controls">
+            <div class="game-button"></div>
+            <div class="game-button"></div>
+          </div>
+        </div>
+        <div class="flame" id="flame-element">
+          <svg viewBox="0 0 100 100" width="60" height="90">
+            <path d="M50,0 Q65,45 80,60 T50,100 T20,60 T50,0" fill="orange" />
+            <path d="M50,20 Q60,50 70,60 T50,90 T30,60 T50,20" fill="yellow" />
+          </svg>
+        </div>
+        <div class="burned-fragments" id="fragments-element">
+          <svg viewBox="0 0 100 100" width="60" height="60">
+            <rect x="40" y="70" width="20" height="10" fill="#333" />
+            <rect
+              x="30"
+              y="75"
+              width="15"
+              height="5"
+              fill="#222"
+              transform="rotate(15)"
+            />
+            <rect
+              x="55"
+              y="75"
+              width="15"
+              height="5"
+              fill="#222"
+              transform="rotate(-15)"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div class="timer-display" id="timer-display">60:00</div>
+    </div>
+
+    <div class="settings-section">
+      <h2>Procrastination Settings</h2>
+      <div class="settings-option">
+        <input type="checkbox" id="auto-procrastinate" checked />
+        <label for="auto-procrastinate"
+          >Automatically redirect to procrastination sites</label
+        >
+      </div>
+      <div class="settings-option">
+        <label for="procrastination-duration"
+          >Procrastination time (minutes):</label
+        >
+        <input
+          type="number"
+          id="procrastination-duration"
+          min="1"
+          max="120"
+          value="60"
+        />
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-option">
+        <input type="checkbox" id="auto-dino" />
+        <label for="auto-dino"
+          >Automatically redirect to dinosaur game when offline</label
+        >
+      </div>
+      <button id="redirect-toggle">Show Website Redirect Section</button>
+    </div>
+
+    <div class="hidden-section" id="website-redirect-section">
+      <!-- This section is hidden by default -->
+      <h2>Website Redirector</h2>
+      <p>
+        Add websites to redirect. For example, to redirect from Gmail to YouTube
+        Gaming, enter "mail.google.com" and "youtube.com/gaming".
+      </p>
+      <div class="controls">
+        <button id="add-row">Add New Redirect</button>
+        <button id="save-btn">Save Changes</button>
+      </div>
+      <div id="redirects-container">
+        <!-- Redirect items will be added here -->
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
